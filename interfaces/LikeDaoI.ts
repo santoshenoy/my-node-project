@@ -1,3 +1,6 @@
+/**
+ * Defines the LikeDao interface.
+ */
 import Like from "../models/Like";
 
 /**
