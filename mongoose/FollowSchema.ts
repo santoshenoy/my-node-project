@@ -1,6 +1,6 @@
 
 import mongoose, {Schema} from "mongoose";
-import Follow from "../../models/follows/Follow";
+import Follow from "../models/Follow";
 
 const FollowSchema = new mongoose.Schema<Follow>({
     user: {type: Schema.Types.ObjectId, ref: "FollowModel"},
