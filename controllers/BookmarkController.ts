@@ -42,7 +42,7 @@ export default class BookmarkController implements BookmarkControllerI {
      * Retrieves all users that bookmarked a particular tuit from the database.
      * @param {Request} req Represents the request from the client, including the path parameter tid representing the
      * bookmarked tuit.
-     * @param {Response} res Represents the response to the client, including the body as a JSON array containing the
+     * @param {Response} res Represents the response to the client, including the body as JSON containing the
      * users who bookmarked the tuit.
      */
     findAllUsersThatBookmarkedTuit(req: Request, res: Response) {
@@ -54,7 +54,7 @@ export default class BookmarkController implements BookmarkControllerI {
      * Retrieves all tuits bookmarked by a particular user from the database.
      * @param {Request} req Represents the request from the client, including the path parameter uid representing the user
      * who has bookmarked the tuit.
-     * @param {Response} res Represents the response to the client, including the body as a JSON array containing the tuits
+     * @param {Response} res Represents the response to the client, including the body as JSON containing the tuits
      * bookmarked by the user.
      */
     findAllTuitsBookmarkedByUser(req: Request, res: Response) {
@@ -62,11 +62,25 @@ export default class BookmarkController implements BookmarkControllerI {
             .then(bookmarks => res.json(bookmarks));
     }
 
+    /**
+     * Records a particular user bookmarking a particular tuit.
+     * @param {Request} req Represents the request from the client, including the path parameters uid and tid representing
+     * the user that is bookmarking the tuit and the tuit that is being bookmarked respectively.
+     * @param {Response} res Represents the response to the client, including the body as JSON containing
+     * the new bookmark inserted into the database.
+     */
     userBookmarksTuit(req: Request, res: Response) {
         return BookmarkController.bookmarkDao.userBookmarksTuit(req.params.uid, req.params.tid)
             .then(bookmark => res.json(bookmark));
     }
 
+    /**
+     * Records the unbookmarking of a particular tuit.
+     * @param {Request} req Represents the request from the client, including the path parameters uid and tid representing
+     * the user who is unbookmarking the tuit and the tuit that is being unbookmarked respectively.
+     * @param {Response} res Represents the response to the client, including status on whether deleting the bookmark
+     * was successful or not.
+     */
     userUnbookmarksTuit(req: Request, res: Response) {
         return BookmarkController.bookmarkDao.userUnbookmarksTuit(req.params.uid, req.params.tid)
             .then(status => res.send(status));

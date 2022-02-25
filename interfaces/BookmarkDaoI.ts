@@ -1,11 +1,13 @@
-
+/**
+ * @file Defines the BookmarkDao interface.
+ */
 import Bookmark from "../models/Bookmark";
 
 export default interface BookmarkDaoI {
 
-    findAllTuitsBookmarkedByUser (uid: string): Promise<Bookmark[]>;
-
     findAllUsersThatBookmarkedTuit (tid: string): Promise<Bookmark[]>;
+
+    findAllTuitsBookmarkedByUser (uid: string): Promise<Bookmark[]>;
 
     userBookmarksTuit (uid: string, tid: string): Promise<any>;
 
