@@ -9,10 +9,10 @@ export default class FollowController implements FollowControllerI {
     public static getInstance = (app: Express): FollowController => {
         if (FollowController.followController == null) {
             FollowController.followController = new FollowController();
-            app.get('/users/:uid/followers', FollowController.followController.findAllFollowersOfUser);
-            app.get('/users/:uid/following', FollowController.followController.findAllUsersThatUserFollows);
-            app.post('/users/:uid/follows/:followedUserId', FollowController.followController.userFollowsUser);
-            app.delete('/users/:uid/unfollows/:unfollowedUserId', FollowController.followController.userUnfollowsUser);
+            app.get("/api/users/:uid/followers", FollowController.followController.findAllFollowersOfUser);
+            app.get("/api/users/:uid/following", FollowController.followController.findAllUsersThatUserFollows);
+            app.post("/api/users/:uid/follows/:followedUserId", FollowController.followController.userFollowsUser);
+            app.delete("/api/users/:uid/unfollows/:unfollowedUserId", FollowController.followController.userUnfollowsUser);
         }
         return FollowController.followController;
     }
