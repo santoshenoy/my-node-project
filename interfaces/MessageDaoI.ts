@@ -1,10 +1,18 @@
+/**
+ * Defines the MessageDao interface.
+ */
 import Message from "../models/Message";
 
+/**
+ * @file Declares API for Messages related data access object methods.
+ */
 export default interface MessageDaoI {
-    findAllMessagesUserSent(uid: string): Promise<Message[]>,
+
     findAllMessagesSentToUser(uid: string): Promise<Message[]>,
-    findAllMessagesUserSentToUser(senderUid: string, receiverUid: string): Promise<Message[]>,
-    findAllMessagesUserReceivedFromUser(receiverUid: string, senderUid: string): Promise<Message[]>,
-    userSendsMessage(senderUid: string, receiverUid: string, message: Message): Promise<any>,
-    userDeletesMessage(mid: string): Promise<any>
+
+    findAllMessagesSentByUser(uid: string): Promise<Message[]>,
+
+    userSendsMessage(senderId: string, receiverId: string, message: Message): Promise<any>,
+
+    userDeletesMessage(messageId: string): Promise<any>
 }
