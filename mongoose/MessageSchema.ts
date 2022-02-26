@@ -5,7 +5,7 @@ import mongoose, {Schema} from "mongoose";
 import Message from "../models/Message";
 
 /**
- * @typedef Message Represents a particular message being sent.
+ * @typedef Message Represents the message being sent.
  * @property {ObjectId} sender Represent the sender of the message.
  * @property {ObjectId} receiver Represents the receiver of the message.
  * @property {ObjectId} message Represents the contents of the message.
