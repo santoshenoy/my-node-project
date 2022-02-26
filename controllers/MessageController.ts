@@ -29,7 +29,7 @@ export default class MessageController implements MessageControllerI {
     public static getInstance = (app: Express) : MessageController => {
         if (MessageController.messageController == null) {
             MessageController.messageController = new MessageController();
-            app.get("/api//users/:uid/messagesReceived", MessageController.messageController.findAllMessagesSentToUser);
+            app.get("/api/users/:uid/messagesReceived", MessageController.messageController.findAllMessagesSentToUser);
             app.get("/api/users/:uid/messagesSent", MessageController.messageController.findAllMessagesSentByUser);
             app.post("/api/users/:senderId/messages/:receiverId", MessageController.messageController.userSendsMessage);
             app.delete("/api/messages/:messageId", MessageController.messageController.userDeletesMessage);
