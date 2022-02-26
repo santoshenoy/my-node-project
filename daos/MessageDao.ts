@@ -31,7 +31,7 @@ export default class MessageDao implements MessageDaoI {
      * @param {string} uid user's primary key.
      */
     findAllMessagesSentByUser = async (uid: string): Promise<Message[]> =>
-        MessageModel.find({from: uid});
+        MessageModel.find({fromUser: uid});
 
     /**
      * Uses MessageModel to retrieve all messages that were sent to a particular user.
@@ -46,7 +46,7 @@ export default class MessageDao implements MessageDaoI {
      * @param {string} receiverId receiver's primary key.
      */
     userSendsMessage = async (senderId: string, receiverId: string, message: Message): Promise<any> =>
-        MessageModel.create({...message,from: senderId, to: receiverId});
+        MessageModel.create({...message,fromUser: senderId, toUser: receiverId});
 
     /**
      * Uses MessageModel to record a particular user deleting a particular message.

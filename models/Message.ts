@@ -12,8 +12,8 @@ import User from "./User";
  * @property {Date} sentOn The date the message was sent on.
  */
 export default interface Message {
-    receiver: User,
-    sender: User,
+    fromUser: User,
+    toUser: User,
     message: String,
     sentOn?: Date
 }
