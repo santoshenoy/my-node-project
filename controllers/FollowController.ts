@@ -22,7 +22,7 @@ export default class FollowController implements FollowControllerI {
     private static followDao: FollowDao = FollowDao.getInstance();
 
     /**
-     * Create a singleton follow controller instance.
+     * Creates a singleton follow controller instance.
      * @param {Express} app Express instance to declare the RESTful web service API.
      * @return FollowController
      */
