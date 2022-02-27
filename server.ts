@@ -20,7 +20,6 @@ const userController = UserController.getInstance(app);
 const tuitController = TuitController.getInstance(app);
 const bookmarkController = BookmarkController.getInstance(app);
 const followController = FollowController.getInstance(app);
-const followController = FollowController.getInstance(app);
 const messageController = MessageController.getInstance(app);
 const likeController = LikeController.getInstance(app);
 
