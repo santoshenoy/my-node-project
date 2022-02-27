@@ -1,3 +1,6 @@
+/**
+ * Class representing the connection between Tuits and Tags.
+ */
 import Tuit from './Tuit'
 
 export default class Tuit2Tag {

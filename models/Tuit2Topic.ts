@@ -1,3 +1,6 @@
+/**
+ * Class representing the connection between Tuits and Topics.
+ */
 import Tuit from './Tuit';
 
 export default class Tuit2Topic {
