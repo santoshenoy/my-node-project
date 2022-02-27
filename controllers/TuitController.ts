@@ -14,7 +14,7 @@ import TuitControllerI from "../interfaces/TuitControllerI";
  *     a given user</li>
  *     <li>GET /api/tuits to retrieve all the tuit instances</li>
  *     <li>GET /api/tuits/:tid to retrieve a particular tuit instances</li>
- *     <li>GET /api/users/:uid/tuits to retrieve tuits for a given user </li>
+ *     <li>GET /api/users/:uid/tuits to retrieve tuits for a given user</li>
  *     <li>PUT /api/tuits/:tid to modify an individual tuit instance </li>
  *     <li>DELETE /api/tuits/:tid to remove a particular tuit instance</li>
  * </ul>
