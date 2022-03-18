@@ -32,7 +32,8 @@ app.get('/add/:a/:b', (req, res) => {
     res.send(req.params.a + req.params.b);
 })
 
-mongoose.connect("mongodb+srv://santoshshenoy:santosh%40123@cluster0.sjues.mongodb.net/myFirstDatabase?retryWrites=true&w=majority");
+//mongoose.connect("mongodb+srv://santoshshenoy:santosh%40123@cluster0.sjues.mongodb.net/myFirstDatabase?retryWrites=true&w=majority");
+mongoose.connect("mongodb+srv://fse_assignment_3:fse_assoignment_3@cluster0.l9bio.mongodb.net/myFirstDatabase?retryWrites=true&w=majority");
 const userController = UserController.getInstance(app);
 const tuitController = TuitController.getInstance(app);
 const bookmarkController = BookmarkController.getInstance(app);
