@@ -22,6 +22,8 @@ import BookmarkController from "./controllers/BookmarkController";
 import FollowController from "./controllers/FollowController";
 import MessageController from "./controllers/MessageController";
 const app = express();
+var cors = require('cors');
+app.use(cors());
 app.use(express.json());
 app.get('/hello', (req, res) =>
     res.send('Hello World!'));
