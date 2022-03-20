@@ -41,6 +41,8 @@ export default class UserController implements UserControllerI {
             app.delete("/api/users", UserController.userController.deleteAllUsers);
             app.post("/api/login", UserController.userController.login);
             app.post("/api/register", UserController.userController.register);
+            // For testing purposes
+            app.get('/api/users/username/:username/delete', UserController.userController.deleteUsersByUsername);
         }
         return UserController.userController;
     }
@@ -120,4 +122,8 @@ export default class UserController implements UserControllerI {
     register = (req: Request, res: Response) =>
         UserController.userDao.findUserByUsername(req.body.username)
             .then(user=> res.json(user));
+
+    deleteUsersByUsername = (req: Request, res: Response) =>
+        UserController.userDao.deleteUsersByUsername(req.params.username)
+            .then(status => res.send(status));
 };
