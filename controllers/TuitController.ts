@@ -1,48 +1,48 @@
 /**
- * @file Controller RESTful Web service API for tuits resource.
+ * @file Controller RESTful Web service API for tuits resource
  */
+import {Request, Response, Express} from "express";
 import TuitDao from "../daos/TuitDao";
-import Tuit from "../models/Tuit";
-import {Express, Request, Response} from "express";
 import TuitControllerI from "../interfaces/TuitControllerI";
+import Tuit from "../models/Tuit";
 
 /**
  * @class TuitController Implements RESTful Web service API for tuits resource.
  * Defines the following HTTP endpoints:
  * <ul>
- *     <li>POST /api/users/:uid/tuits to create a new tuit instance for
- *     a given user</li>
- *     <li>GET /api/tuits to retrieve all the tuit instances</li>
- *     <li>GET /api/tuits/:tid to retrieve a particular tuit instances</li>
- *     <li>GET /api/users/:uid/tuits to retrieve tuits for a given user</li>
- *     <li>PUT /api/tuits/:tid to modify an individual tuit instance </li>
- *     <li>DELETE /api/tuits/:tid to remove a particular tuit instance</li>
+ *     <li>GET /tuits to retrieve all the tuit instances</li>
+ *     <li>GET /tuits/:tid to retrieve a particular tuit instances</li>
+ *     <li>GET /users/:uid/tuits to retrieve tuits for a given user </li>
+ *     <li>POST /users/:uid/tuits to create a new tuit instance for a given user</li>
+ *     <li>PUT /tuits/:tid to modify an individual tuit instance </li>
+ *     <li>DELETE /tuits/:tid to remove a particular tuit instance</li>
  * </ul>
- * @property {TuitDao} tuitDao Singleton DAO implementing tuit CRUD operations.
+ * @property {TuitDao} tuitDao Singleton DAO implementing tuit CRUD operations
  * @property {TuitController} tuitController Singleton controller implementing
- * RESTful Web service API.
+ * RESTful Web service API
  */
 export default class TuitController implements TuitControllerI {
-    private static tuitDao: TuitDao = TuitDao.getInstance();
+    private tuitDao: TuitDao = TuitDao.getInstance();
     private static tuitController: TuitController | null = null;
 
     /**
-     * Creates singleton controller instance.
-     * @param {Express} app Express instance to declare the RESTful Web service
-     * API.
-     * @return TuitController
+     * Creates singleton controller instance
+     * @param {Express} app Express instance to declare the RESTful Web service API
+     * @return tuitController
      */
     public static getInstance = (app: Express): TuitController => {
         if(TuitController.tuitController === null) {
             TuitController.tuitController = new TuitController();
+            //define HTTP request address
             app.get("/api/tuits", TuitController.tuitController.findAllTuits);
+            app.get("/api/tuits/:tid", TuitController.tuitController.findTuitById);
             app.get("/api/users/:uid/tuits", TuitController.tuitController.findAllTuitsByUser);
-            app.get("/api/tuits/:uid", TuitController.tuitController.findTuitById);
             app.post("/api/users/:uid/tuits", TuitController.tuitController.createTuitByUser);
-            app.put("/api/tuits/:uid", TuitController.tuitController.updateTuit);
-            app.delete("/api/tuits/:uid", TuitController.tuitController.deleteTuit);
-            //app.delete('/api/users/:uid/tuits', TuitController.tuitController.deleteTuitByAuthor);
-            app.delete('/api/tuits/content/:tuitContent', TuitController.tuitController.deleteTuitByContent);
+            app.put("/api/tuits/:tid", TuitController.tuitController.updateTuit);
+            app.delete("/api/tuits/:tid", TuitController.tuitController.deleteTuit);
+
+            //for testing, not RESTful
+            app.delete("/tuits/content/:content/delete", TuitController.tuitController.deleteTuitByContent);
         }
         return TuitController.tuitController;
     }
@@ -51,13 +51,13 @@ export default class TuitController implements TuitControllerI {
 
     /**
      * Retrieves all tuits from the database and returns an array of tuits.
-     * @param {Request} req Represents request from client.
+     * @param {Request} req Represents request from client
      * @param {Response} res Represents response to client, including the
-     * body formatted as JSON arrays containing the tuit objects.
+     * body formatted as JSON arrays containing the tuit objects
      */
     findAllTuits = (req: Request, res: Response) =>
-        TuitController.tuitDao.findAllTuits()
-            .then((tuits: Tuit[]) => res.json(tuits));
+        this.tuitDao.findAllTuits()
+            .then(tuits => res.json(tuits));
 
     /**
      * Retrieves all tuits from the database for a particular user and returns
@@ -68,60 +68,69 @@ export default class TuitController implements TuitControllerI {
      */
     findAllTuitsByUser = (req: Request, res: Response) => {
         // @ts-ignore
-        let userId = req.params.uid === "me" && req.session['profile'] ? req.session['profile']._id :
-            req.params.uid;
-        TuitController.tuitDao.findAllTuitsByUser(userId)
+        let userId = req.params.uid === "my" && req.session['profile'] ?
+            // @ts-ignore
+            req.session['profile']._id : req.params.uid;
+
+        this.tuitDao.findAllTuitsByUser(userId)
             .then((tuits: Tuit[]) => res.json(tuits));
     }
 
     /**
      * @param {Request} req Represents request from client, including path
-     * parameter tid identifying the primary key of the tuit to be retrieved.
+     * parameter tid identifying the primary key of the tuit to be retrieved
      * @param {Response} res Represents response to client, including the
-     * body formatted as JSON containing the tuit that matches the user ID.
+     * body formatted as JSON containing the tuit that matches the tid
      */
     findTuitById = (req: Request, res: Response) =>
-        TuitController.tuitDao.findTuitById(req.params.uid)
-            .then((tuit: Tuit) => res.json(tuit));
+        this.tuitDao.findTuitById(req.params.tid)
+            .then(tuit => res.json(tuit));
+
 
     /**
      * @param {Request} req Represents request from client, including body
      * containing the JSON object for the new tuit to be inserted in the
-     * database.
+     * database
      * @param {Response} res Represents response to client, including the
      * body formatted as JSON containing the new tuit that was inserted in the
-     * database.
+     * database
      */
     createTuitByUser = (req: Request, res: Response) => {
-        // @ts-ignore
-        let userId = req.params.uid === "me" && req.session['profile'] ? req.session['profile']._id :
-            req.params.uid;
 
-        TuitController.tuitDao.createTuitByUser(userId, req.body)
-            .then((tuit: Tuit) => res.json(tuit));
+        // retrieve _id from session or parameter's uid
+        // @ts-ignore
+        let userId = req.params.uid === "my" && req.session['profile'] ?
+            // @ts-ignore
+            req.session['profile']._id : req.params.uid;
+
+        this.tuitDao.createTuitByUser(userId, req.body)
+            .then(tuit => res.json(tuit));
     }
 
+
     /**
      * @param {Request} req Represents request from client, including path
-     * parameter tid identifying the primary key of the tuit to be modified.
+     * parameter tid identifying the primary key of the tuit to be modified
      * @param {Response} res Represents response to client, including status
-     * on whether updating a tuit was successful or not.
+     * on whether updating a tuit was successful or not
      */
     updateTuit = (req: Request, res: Response) =>
-        TuitController.tuitDao.updateTuit(req.params.uid, req.body)
-            .then((status) => res.send(status));
+        this.tuitDao.updateTuit(req.params.tid, req.body)
+            .then(status => res.json(status));
+
 
     /**
      * @param {Request} req Represents request from client, including path
-     * parameter tid identifying the primary key of the tuit to be removed.
+     * parameter tid identifying the primary key of the tuit to be removed
      * @param {Response} res Represents response to client, including status
-     * on whether deleting a user was successful or not.
+     * on whether deleting a tuit was successful or not
      */
     deleteTuit = (req: Request, res: Response) =>
-        TuitController.tuitDao.deleteTuit(req.params.uid)
-            .then((status) => res.send(status));
-
-    deleteTuitByContent = (req: Request, res: Response) =>
-        TuitController.tuitDao.deleteTuitByContent(req.params.tuitContent)
+        this.tuitDao.deleteTuit(req.params.tid)
             .then(status => res.json(status));
-};
+
+    // just for test, delete tuit by content
+    deleteTuitByContent = (req: Request, res: Response) =>
+        this.tuitDao.deleteTuitByContent(req.params.content)
+            .then(status => res.json(status));
+}

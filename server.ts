@@ -1,30 +1,53 @@
 /**
- * @file Implements HTTP server using Express. Defines RESTful Web services
- * for CRUD operations on the following resources:
+ * @file Implements an Express Node HTTP server. Declares RESTful Web services
+ * enabling CRUD operations on the following resources:
  * <ul>
  *     <li>users</li>
  *     <li>tuits</li>
  *     <li>likes</li>
+ *     <li>bookmarks</li>
  *     <li>follows</li>
  *     <li>messages</li>
- *     <li>bookmarks</li>
  * </ul>
  *
- * Connects to a MongoDB instance hosted on the Atlas cloud database.
- *
+ * Connects to a remote MongoDB instance hosted on the Atlas cloud database
+ * service
  */
 import express, {Request, Response} from 'express';
+import bodyParser from 'body-parser';
 import UserController from "./controllers/UserController";
 import TuitController from "./controllers/TuitController";
 import LikeController from "./controllers/LikeController";
-import mongoose from 'mongoose';
 import BookmarkController from "./controllers/BookmarkController";
 import FollowController from "./controllers/FollowController";
 import MessageController from "./controllers/MessageController";
+import AuthenticationController from "./controllers/AuthenticationController";
+import mongoose from 'mongoose';
+import 'dotenv/config'
+
+const session = require("express-session");
 const app = express();
+let sess = {
+    secret: process.env.SECRET,
+    cookie: {
+        secure: false
+    }
+}
+
+if (process.env.ENV === 'production') {
+    app.set('trust proxy', 1)
+    sess.cookie.secure = true;
+}
+
+
 var cors = require('cors');
-app.use(cors());
+app.use(session(sess));
 app.use(express.json());
+app.use(cors({
+    credentials: true,
+    origin: 'http://localhost:3000'
+}));
+
 app.get('/hello', (req, res) =>
     res.send('Hello World!'));
 
@@ -32,14 +55,23 @@ app.get('/add/:a/:b', (req, res) => {
     res.send(req.params.a + req.params.b);
 })
 
-//mongoose.connect("mongodb+srv://santoshshenoy:santosh%40123@cluster0.sjues.mongodb.net/myFirstDatabase?retryWrites=true&w=majority");
-mongoose.connect("mongodb+srv://fseassignmentthree:santosh%40123@cluster0.l9bio.mongodb.net/myFirstDatabase?retryWrites=true&w=majority");
+mongoose.connect('mongodb+srv://' + process.env.DB_USERNAME + ':' + process.env.DB_PASSWORD
+    + '@cluster0.sjues.mongodb.net/myFirstDatabase?retryWrites=true&w=majority');
+mongoose.connection.once("open", function(){
+    console.log("Database connected successfully");
+})
+
+
 const userController = UserController.getInstance(app);
 const tuitController = TuitController.getInstance(app);
+const likeController = LikeController.getInstance(app);
 const bookmarkController = BookmarkController.getInstance(app);
 const followController = FollowController.getInstance(app);
 const messageController = MessageController.getInstance(app);
-const likeController = LikeController.getInstance(app);
-
+AuthenticationController(app);
+/**
+ * Start a server listening at port 4000 locally
+ * but use environment variable PORT on Heroku if available.
+ */
 const PORT = 4000;
 app.listen(process.env.PORT || PORT);
