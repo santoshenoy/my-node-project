@@ -24,6 +24,7 @@ import MessageController from "./controllers/MessageController";
 import AuthenticationController from "./controllers/AuthenticationController";
 import mongoose from 'mongoose';
 import 'dotenv/config'
+import DislikeController from "./controllers/DislikeController";
 
 const session = require("express-session");
 const app = express();
@@ -68,6 +69,7 @@ const likeController = LikeController.getInstance(app);
 const bookmarkController = BookmarkController.getInstance(app);
 const followController = FollowController.getInstance(app);
 const messageController = MessageController.getInstance(app);
+const dislikeController = DislikeController.getInstance(app);
 AuthenticationController(app);
 /**
  * Start a server listening at port 4000 locally
