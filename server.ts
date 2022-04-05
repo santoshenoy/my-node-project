@@ -29,7 +29,6 @@ import DislikeController from "./controllers/DislikeController";
 const session = require("express-session");
 const app = express();
 var cors = require('cors');
-app.use(express.json());
 app.use(cors({
     credentials: true,
     origin: 'https://cool-travesseiro-1f0092.netlify.app'
@@ -51,6 +50,7 @@ if (process.env.ENV === 'production') {
     sess.cookie.secure = true;
 }
 app.use(session(sess));
+app.use(express.json());
 
 
 
