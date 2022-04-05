@@ -28,6 +28,14 @@ import DislikeController from "./controllers/DislikeController";
 
 const session = require("express-session");
 const app = express();
+var cors = require('cors');
+app.use(express.json());
+app.use(cors({
+    credentials: true,
+    origin: 'https://cool-travesseiro-1f0092.netlify.app'
+}));
+
+
 let sess = {
     secret: "public_key987",
     saveUninitialized: true,
@@ -42,15 +50,10 @@ if (process.env.ENV === 'production') {
     app.set('trust proxy', 1)
     sess.cookie.secure = true;
 }
-
-
-var cors = require('cors');
 app.use(session(sess));
-app.use(express.json());
-app.use(cors({
-    credentials: true,
-    origin: 'https://cool-travesseiro-1f0092.netlify.app'
-}));
+
+
+
 
 app.get('/hello', (req, res) =>
     res.send('Hello World!'));
