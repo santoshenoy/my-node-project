@@ -31,7 +31,7 @@ const app = express();
 var cors = require('cors');
 app.use(cors({
     credentials: true,
-    origin: 'https://cool-travesseiro-1f0092.netlify.app'
+    origin: "https://cool-travesseiro-1f0092.netlify.app"
 }));
 
 
@@ -45,7 +45,7 @@ let sess = {
     }
 }
 
-if (process.env.ENV === 'production') {
+if (process.env.NODE_ENV === 'production') {
     app.set('trust proxy', 1)
     sess.cookie.secure = true;
 }
