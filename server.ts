@@ -29,7 +29,7 @@ import DislikeController from "./controllers/DislikeController";
 const session = require("express-session");
 const app = express();
 let sess = {
-    secret: process.env.SECRET,
+    secret: "public_key987",
     cookie: {
         secure: false
     }
@@ -56,8 +56,10 @@ app.get('/add/:a/:b', (req, res) => {
     res.send(req.params.a + req.params.b);
 })
 
-mongoose.connect('mongodb+srv://' + process.env.DB_USERNAME + ':' + process.env.DB_PASSWORD
-    + '@cluster0.sjues.mongodb.net/myFirstDatabase?retryWrites=true&w=majority');
+//mongoose.connect('mongodb+srv://' + process.env.DB_USERNAME + ':' + process.env.DB_PASSWORD
+ //   + '@cluster0.sjues.mongodb.net/myFirstDatabase?retryWrites=true&w=majority');
+
+mongoose.connect("mongodb+srv://santoshshenoy:santosh%40123@cluster0.sjues.mongodb.net/myFirstDatabase?retryWrites=true&w=majority");
 mongoose.connection.once("open", function(){
     console.log("Database connected successfully");
 })

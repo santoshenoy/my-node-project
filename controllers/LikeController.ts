@@ -38,7 +38,7 @@ export default class LikeController implements LikeControllerI {
             LikeController.likeController = new LikeController();
             app.get("/api/users/:uid/likes", LikeController.likeController.findAllTuitsLikedByUser);
             app.get("/api/tuits/:tid/likes", LikeController.likeController.findAllUsersThatLikedTuit);
-            app.post("/api/users/:uid/likes/:tid", LikeController.likeController.userLikesTuit);
+            //app.post("/api/users/:uid/likes/:tid", LikeController.likeController.userLikesTuit);
             app.delete("/api/users/:uid/unlikes/:tid", LikeController.likeController.userUnlikesTuit);
             app.put("/api/users/:uid/likes/:tid", LikeController.likeController.userTogglesTuitLikes);
         }
@@ -59,15 +59,24 @@ export default class LikeController implements LikeControllerI {
             .then(likes => res.json(likes));
 
     /**
-     * Retrieves all tuits liked by a user from the database.
-     * @param {Request} req Represents request from client, including the path
-     * parameter uid representing the user liked the tuits.
-     * @param {Response} res Represents response to client, including the
-     * body formatted as JSON arrays containing the tuit objects that were liked.
+     * Retrieves all tuits liked by a user from the database
+     * @param {Request} req The request from the client, including the path parameter uid representing the user
+     * who has liked tuits
+     * @param {Response} res The response to the client, including the body as a JSON array containing the
+     * relevant tuit objects
      */
-    findAllTuitsLikedByUser = (req: Request, res: Response) =>
-        LikeController.likeDao.findAllTuitsLikedByUser(req.params.uid)
-            .then(likes => res.json(likes));
+    findAllTuitsLikedByUser(req: Request, res: Response) {
+        const uid = req.params.uid;
+        // @ts-ignore
+        const profile = req.session['profile'];
+        const userId = uid === "me" && profile ? profile._id : uid;
+        LikeController.likeDao.findAllTuitsLikedByUser(userId)
+            .then(likes => {
+                const likesNonNullTuits = likes.filter(like => like.tuit);
+                const tuitsFromLikes = likesNonNullTuits.map(like => like.tuit);
+                res.json(tuitsFromLikes);
+            })
+    }
 
     /**
      * @param {Request} req Represents request from client, including the
@@ -77,9 +86,14 @@ export default class LikeController implements LikeControllerI {
      * body formatted as JSON containing the new likes that was inserted in the
      * database.
      */
-    userLikesTuit = (req: Request, res: Response) =>
-        LikeController.likeDao.userLikesTuit(req.params.uid, req.params.tid)
+    userLikesTuit(req: Request, res: Response) {
+        // @ts-ignore
+        const profile = req.session['profile'];
+        const userId = req.params.uid === "me" && profile ?
+            profile._id : req.params.uid;
+        LikeController.likeDao.userLikesTuit(userId, req.params.tid)
             .then(likes => res.json(likes));
+    }
 
     /**
      * @param {Request} req Represents request from client, including the
@@ -88,9 +102,14 @@ export default class LikeController implements LikeControllerI {
      * @param {Response} res Represents response to client, including status
      * on whether deleting the like was successful or not.
      */
-    userUnlikesTuit = (req: Request, res: Response) =>
-        LikeController.likeDao.userUnlikesTuit(req.params.uid, req.params.tid)
+    userUnlikesTuit(req: Request, res: Response) {
+        // @ts-ignore
+        const profile = req.session['profile'];
+        const userId = req.params.uid === "me" && profile ?
+            profile._id : req.params.uid;
+         return LikeController.likeDao.userUnlikesTuit(userId, req.params.tid)
             .then(status => res.send(status));
+        }
 
     /**
      * Adjusts the relationship between likes and dislikes for a particular tuit
@@ -113,10 +132,10 @@ export default class LikeController implements LikeControllerI {
                 .countHowManyLikedTuit(tid);
             let tuit = await LikeController.tuitDao.findTuitById(tid);
             if (userAlreadyLikedTuit) {
-                await LikeController.likeDao.userUnlikesTuit(tid, userId);
+                await LikeController.likeDao.userUnlikesTuit(userId, tid);
                 tuit.stats.likes = howManyLikedTuit - 1;
             } else {
-                await LikeController.likeDao.userLikesTuit(tid, userId);
+                await LikeController.likeDao.userLikesTuit(userId, tid);
                 tuit.stats.likes = howManyLikedTuit + 1;
 
             }

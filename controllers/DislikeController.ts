@@ -94,7 +94,11 @@ export default class DislikeController implements DislikeControllerI {
      * the new dislike
      */
     userDislikesTuit (req: Request, res: Response) {
-        return DislikeController.dislikeDao.userDislikesTuit(req.params.tid, req.params.uid)
+        // @ts-ignore
+        const profile = req.session['profile'];
+        const userId = req.params.uid === "me" && profile ?
+            profile._id : req.params.uid;
+        return DislikeController.dislikeDao.userDislikesTuit(req.params.tid, userId)
             .then(dislike => res.json(dislike));
     }
     /**
@@ -105,7 +109,11 @@ export default class DislikeController implements DislikeControllerI {
      * was successful or not
      */
     userUndislikesTuit(req: Request, res: Response) {
-        return DislikeController.dislikeDao.userUndislikesTuit(req.params.tid, req.params.uid)
+        // @ts-ignore
+        const profile = req.session['profile'];
+        const userId = req.params.uid === "me" && profile ?
+            profile._id : req.params.uid;
+        return DislikeController.dislikeDao.userUndislikesTuit(req.params.tid, userId)
             .then(status => res.send(status));
     }
 
@@ -117,7 +125,11 @@ export default class DislikeController implements DislikeControllerI {
      * relevant tuit objects
      */
     findAllTuitsDislikedByUser(req: Request, res: Response) {
-        return DislikeController.dislikeDao.findAllTuitsDislikedByUser(req.params.uid)
+        // @ts-ignore
+        const profile = req.session['profile'];
+        const userId = req.params.uid === "me" && profile ?
+            profile._id : req.params.uid;
+        return DislikeController.dislikeDao.findAllTuitsDislikedByUser(userId)
             .then(dislikes => res.json(dislikes));
     }
     /**

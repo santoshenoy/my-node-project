@@ -29,8 +29,8 @@ const UserSchema = new mongoose.Schema<User>({
     headerImage: String,
     biography: String,
     dateOfBirth: Date,
-    accountType: {type: String, enum: ["PERSONAL", "ACADEMIC", "PROFESSIONAL"]},
-    maritalStatus: {type: String, enum: ["MARRIED", "SINGLE", "WIDOWED"]},
+    accountType: {type: String, default: 'PERSONAL', enum: ["PERSONAL", "ACADEMIC", "PROFESSIONAL"]},
+    maritalStatus: {type: String, default: 'SINGLE', enum: ["MARRIED", "SINGLE", "WIDOWED"]},
     location: {
         latitude: Number,
         longitude: Number
