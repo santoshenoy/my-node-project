@@ -46,7 +46,7 @@ app.use(session(sess));
 app.use(express.json());
 app.use(cors({
     credentials: true,
-    origin: 'http://localhost:3000'
+    origin: 'https://cool-travesseiro-1f0092.netlify.app'
 }));
 
 app.get('/hello', (req, res) =>
